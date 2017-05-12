@@ -4,7 +4,7 @@ import json
 from time import sleep
 
 toggl = Toggl()
-toggl.setAPIKey("APIKEY")
+toggl.setAPIKey("")
 
 def autoScan():
     """ 
@@ -45,8 +45,11 @@ def stopCurrentTimer():
 def newTimer(myprojectpid):
     """ Sets a new timer in Toggl"""
     stopCurrentTimer()
-    print "starting new timer!"
-    toggl.startTimeEntry("Automatic punchin at NSP", myprojectpid)
+    if myprojectpid != "HALT ALL":
+        print "starting new timer!"
+        toggl.startTimeEntry("Automatic punchin at NSP", myprojectpid)
+    else:
+        print "Timers stopped"
 
 if __name__ == "__main__":
     print "program initiated!"
