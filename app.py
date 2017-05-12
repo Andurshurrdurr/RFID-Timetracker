@@ -38,9 +38,14 @@ def lookupCards(UID):
         return
 
 def stopCurrentTimer():
-    currentTimer = toggl.currentRunningTimeEntry()
-    toggl.stopTimeEntry(currentTimer['data']['id'])
-    return "timer stopped"
+    try:
+        currentTimer = toggl.currentRunningTimeEntry()
+        toggl.stopTimeEntry(currentTimer['data']['id'])
+        print "timers stopped"
+    except TypeError as e:
+        print "no timers running"
+    finally: 
+        return
 
 def newTimer(myprojectpid):
     """ Sets a new timer in Toggl"""
