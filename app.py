@@ -1,22 +1,57 @@
-from ScanRFID import getSerial
+import ScanRFID
 from TogglPy import Toggl
 import json
+from time import sleep
+
+toggl = Toggl()
+toggl.setAPIKey("APIKEY")
 
 def autoScan():
-    print getSerial
+    """ 
+    This function loops the RFID scanning function and returns UID of
+    RFID card. It is polling and sleeping the program at 1 sec intervals.
+    """
+    while True:
+        card = ScanRFID.getSerial()
+        if card != 0:
+            return card
+        else: 
+            sleep(1)
+
+def lookupCards(UID):
+    """
+    Looks up the Unique ID of the RFID card in the cards.json file in the
+    program directory. Throws a KeyError if card is not registered.
+    """
+    print "Looking up card in json file..."
+    try:
+        with open('./cards.json') as cardsFile:
+            cards = json.load(cardsFile)
+            togglprojectid = cards["cards"][UID]
+            if togglprojectid:
+                return togglprojectid
+    except KeyError as e:
+        print "Card is not registered, KeyError thrown"
+        return
+    except:
+        print "An error in looking up json occured"
+        return
 
 def stopCurrentTimer():
     currentTimer = toggl.currentRunningTimeEntry()
     toggl.stopTimeEntry(currentTimer['data']['id'])
     return "timer stopped"
 
-def newTimer():
+def newTimer(myprojectpid):
+    """ Sets a new timer in Toggl"""
+    stopCurrentTimer()
     print "starting new timer!"
-    myprojectpid = ****
     toggl.startTimeEntry("Automatic punchin at NSP", myprojectpid)
 
 if __name__ == "__main__":
     print "program initiated!"
-    toggl = Toggl()
-    toggl.setAPIKey("APIKEY")
-    newTimer()
+    while True:
+        card = autoScan()
+        projectid = lookupCards(card)
+        if projectid:
+            newTimer(projectid)

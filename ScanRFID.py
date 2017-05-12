@@ -13,11 +13,20 @@ prot = {
     'select_card' : '\x02\x04\x06',
 }
 
+
+
 def getSerial():
+    """ 
+    Sends the serial commands to the RFID scanner
+    and returns the Unique ID (UID) of the RFID card which is found.
+    """
+    
     ser = serial.Serial('/dev/ttyUSB0',9600,timeout=1)
     ser.write(prot['enquiry_card'])
     resp =  ser.read(4)
 
+    UID = 0
+    
     if resp == prot['enquiry_no_card_found']:
         print "no valid card reachable"
     elif resp == prot['enquiry_cards_return']:
@@ -29,8 +38,8 @@ def getSerial():
             resp = ser.read(7)
             header = resp.encode('hex')[:4]
             if header == "0603":
-                serial = resp[-5:].encode('hex')
-                print "Card Serial:" + serial
+                UID = resp[-5:].encode('hex')
+                print "Card Serial:" + UID
 
     ser.close()
-    return serial
+    return UID
