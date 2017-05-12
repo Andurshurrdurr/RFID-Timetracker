@@ -30,3 +30,4 @@ Thanks to @matthewdowney for his python wrapper for the toggl api. Check out his
 https://github.com/matthewdowney/TogglPy
 
 And thanks to @abbbi for his M302 rfid scanner library. A slightly modified version is in the ScanRFID.py file (I just made it a function)
+https://github.com/abbbi/mifare
